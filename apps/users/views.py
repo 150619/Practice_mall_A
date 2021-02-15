@@ -1,3 +1,5 @@
+import json
+
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -22,8 +24,14 @@ def my_decorator(func):
 @method_decorator(my_decorator, name='post')
 class Register(View):
     @method_decorator(my_decorator)
-    def get(self, request):
-        return HttpResponse('注册页面')
+    def get(self, request, phone_num):
+        name = request.GET.get('name')
+        return HttpResponse(f'{name}注册页面{phone_num}')
 
     def post(self, request):
+        query_dict = request.POST
+        print(query_dict.get('age'))
+        json_str = request.body
+        json_dict = json.loads(json_str)
+        print(json_dict)
         return HttpResponse('注册逻辑')
