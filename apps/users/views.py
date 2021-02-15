@@ -1,6 +1,6 @@
 import json
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 # def register(request):
@@ -35,3 +35,7 @@ class Register(View):
         json_dict = json.loads(json_str)
         print(json_dict)
         return HttpResponse('注册逻辑')
+
+    def put(self, request, phone_num):
+        dict_1 = {'name': '小明', 'age': 18}
+        return JsonResponse(dict_1)

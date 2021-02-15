@@ -46,6 +46,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'meiduo_mall.utils.middlewares.TestMiddleware1',
+    'meiduo_mall.utils.middlewares.TestMiddleware2',
 ]
 
 ROOT_URLCONF = 'meiduo_mall.urls'
