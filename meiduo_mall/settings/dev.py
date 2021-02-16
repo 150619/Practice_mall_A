@@ -36,11 +36,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'apps.users',
     'apps.booktest',
+
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -48,8 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'meiduo_mall.utils.middlewares.TestMiddleware1',
-    'meiduo_mall.utils.middlewares.TestMiddleware2',
+    # 'meiduo_mall.utils.middlewares.TestMiddleware1',
+    # 'meiduo_mall.utils.middlewares.TestMiddleware2',
 ]
 
 ROOT_URLCONF = 'meiduo_mall.urls'
@@ -167,6 +171,14 @@ LOGGING = {
 }
 # 实例化日志对象
 logger = logging.getLogger('django')
+
+# CORS跨域请求白名单设置
+CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1:8080',
+    'http://192.168.3.8:8080',
+    'http://www.meiduo.site:8080',
+)
+CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
