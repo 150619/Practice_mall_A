@@ -86,7 +86,7 @@ DATABASES = {
         'PORT': 3306,  # 数据库端口
         'USER': 'root',  # 数据库用户名
         'PASSWORD': 'ainixiangni',  # 数据库用户密码
-        'NAME': 'django_test',  # 数据库名字
+        'NAME': 'meiduo_mall',  # 数据库名字
     }
 }
 
@@ -179,6 +179,9 @@ CORS_ORIGIN_WHITELIST = (
     'http://www.meiduo.site:8080',
 )
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
+
+# 指定项目使用自定义的模型类
+AUTH_USER_MODEL = 'users.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
