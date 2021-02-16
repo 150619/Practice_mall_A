@@ -16,9 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, register_converter
 
-from meiduo_mall.utils.converters import MobileConverter
+from meiduo_mall.utils.converters import MobileConverter, UserNameConverter
 
 register_converter(MobileConverter, 'mobile')
+register_converter(UserNameConverter, 'username')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.users.urls')),

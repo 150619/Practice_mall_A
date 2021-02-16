@@ -3,5 +3,7 @@ from . import views
 
 # 访问类视图views.类名.as_view()
 urlpatterns = [
-    path('users/register/<mobile:phone_num>', views.Register.as_view()),
+    path('usernames/<username:username>/count/', views.RegisterName.as_view()),
+    path('mobiles/<mobile:mobile>/count/', views.RegisterMobile.as_view()),
+    path('register/', views.Register.as_view())
 ]
