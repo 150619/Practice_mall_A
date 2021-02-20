@@ -1,6 +1,7 @@
 import json
 import re
 
+from django.contrib.auth import login
 from django.http import JsonResponse
 from django.views import View
 
@@ -68,8 +69,9 @@ class Register(View):
         # 如果不相等返回错误码
 
         # 不等于True返回错误码
-        if allow != 'True':
+        if not allow:
             return JsonResponse({'code': '400', 'errmsg': '请同意用户协议'})
         # 将获取到的数据保存到数据库
-        User.objects.create(username=username, password=password, mobile=mobile)
-        return JsonResponse({'code': '0', 'errmsg': 'ok'})
+        user = User.objects.create(username=username, password=password, mobile=mobile)
+        login(request, user)
+        return JsonResponse({'code': '0', 'errmsg': '注册成功'})
