@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 
     'apps.users',
     'apps.booktest',
+    'apps.verification',
 
     'corsheaders',
 ]
@@ -103,6 +104,14 @@ CACHES = {
     "session": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    # 验证码信息: 存到2号库
+    "verify_code": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

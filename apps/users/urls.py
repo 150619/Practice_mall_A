@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views
 
-# 访问类视图views.类名.as_view()
+from apps.users import views
+
 urlpatterns = [
     path('usernames/<username:username>/count/', views.RegisterName.as_view()),
     path('mobiles/<mobile:mobile>/count/', views.RegisterMobile.as_view()),
