@@ -26,7 +26,6 @@ class SmsCodes(View):
         image_code_id = search_dict.get('image_code_id')
         if not all([image_code, image_code_id]):
             return JsonResponse({'code': 400, 'errmsg': '缺少必传参数'})
-        # 判断图形验证码是否正确
         redis_connect = get_redis_connection('verify_code')
         # 从redis数据库获取图形验证码
         b_real_image_code = redis_connect.get(f'code_{image_code_id}')
@@ -40,7 +39,13 @@ class SmsCodes(View):
         if image_code.lower() == real_image_code.lower():
             sms_code = '%06d' % random.randint(0, 999999)
             redis_connect.setex(name=mobile, time=60, value=sms_code)
+            send_flag = redis_connect.get(f'send_flag{mobile}')
+            # 过期值存在说明这个手机发送短信过于频繁
+            if send_flag:
+                return JsonResponse({'code': 400, 'errmsg': '请勿频繁发送短信'})
             # send_message(mobile, sms_code)
+            # 发送完成后设置一个60秒的过期值
+            redis_connect.setex(name=f'send_flag{mobile}', time=60, value=1)
             print(sms_code)
             return JsonResponse({'code': 0, 'errmsg': '短信验证码发送成功'})
         # 不相等返回错误信息
