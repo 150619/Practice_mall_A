@@ -38,14 +38,17 @@ class SmsCodes(View):
         # 全部转换为小写,相等生成短信验证码
         if image_code.lower() == real_image_code.lower():
             sms_code = '%06d' % random.randint(0, 999999)
-            redis_connect.setex(name=mobile, time=60, value=sms_code)
             send_flag = redis_connect.get(f'send_flag{mobile}')
             # 过期值存在说明这个手机发送短信过于频繁
             if send_flag:
                 return JsonResponse({'code': 400, 'errmsg': '请勿频繁发送短信'})
-            # send_message(mobile, sms_code)
+            pl = redis_connect.pipeline()
+            # 将短信验证码储存到redis数据库
+            pl.setex(name=mobile, time=60, value=sms_code)
             # 发送完成后设置一个60秒的过期值
-            redis_connect.setex(name=f'send_flag{mobile}', time=60, value=1)
+            pl.setex(name=f'send_flag{mobile}', time=60, value=1)
+            pl.execute()
+            send_message(mobile, sms_code)
             print(sms_code)
             return JsonResponse({'code': 0, 'errmsg': '短信验证码发送成功'})
         # 不相等返回错误信息
