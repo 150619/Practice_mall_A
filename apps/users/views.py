@@ -65,7 +65,6 @@ class Register(View):
         count = User.objects.filter(mobile=mobile).count()
         if count > 0:
             return JsonResponse({'code': '400', 'errmsg': '手机号已存在'})
-
         # 与redis中储存的验证码做对比
         redis_connect = get_redis_connection('verify_code')
         real_sms_code_b = redis_connect.get(f'{mobile}')
@@ -76,8 +75,7 @@ class Register(View):
             if real_sms_code != sms_code:
                 return JsonResponse({'code': '400', 'errmsg': '短信验证码错误'})
         else:
-            return JsonResponse({'code': '400', 'errmsg': '短信验证码已过期'})
-
+            return JsonResponse({'code': '400', 'errmsg': '短信验证码不存在或已过期,请重新获取'})
         # 不为True返回错误码
         if not allow:
             return JsonResponse({'code': '400', 'errmsg': '请同意用户协议'})
