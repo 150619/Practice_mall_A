@@ -4,6 +4,7 @@ import re
 from django.contrib.auth import login
 from django.http import JsonResponse
 from django.views import View
+from django_redis import get_redis_connection
 
 from apps.users.models import User
 
@@ -36,10 +37,12 @@ class Register(View):
         password2 = json_dict.get('password2')
         # 获取mobile
         mobile = json_dict.get('mobile')
+        # 获取sms_code
+        sms_code = json_dict.get('sms_code')
         # 获取allow
         allow = json_dict.get('allow')
         # 判断必传参数是否全部存在
-        if not all([username, password, password2, mobile, allow]):
+        if not all([username, password, password2, mobile, sms_code, allow]):
             return JsonResponse({'code': '400', 'errmsg': '缺少必传参数'})
         # 判断username的格式
         if not re.match(r'[a-zA-Z0-9_-]{5,20}', username):
@@ -63,12 +66,19 @@ class Register(View):
         if count > 0:
             return JsonResponse({'code': '400', 'errmsg': '手机号已存在'})
 
-        # 获取sms_code
-        # sms_code = json_dict.get('sms_code')
-        # 与redis中的真实验证码做对比
-        # 如果不相等返回错误码
+        # 与redis中储存的验证码做对比
+        redis_connect = get_redis_connection('verify_code')
+        real_sms_code_b = redis_connect.get(f'{mobile}')
+        # 判断redis数据库短信验证码是否过期
+        if real_sms_code_b:
+            real_sms_code = real_sms_code_b.decode()
+            # 如果不相等返回错误码
+            if real_sms_code != sms_code:
+                return JsonResponse({'code': '400', 'errmsg': '短信验证码错误'})
+        else:
+            return JsonResponse({'code': '400', 'errmsg': '短信验证码已过期'})
 
-        # 不等于True返回错误码
+        # 不为True返回错误码
         if not allow:
             return JsonResponse({'code': '400', 'errmsg': '请同意用户协议'})
         # 将获取到的数据保存到数据库
